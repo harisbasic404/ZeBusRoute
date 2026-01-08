@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="ZeBusRoute/ZeBusRoute.csproj" />
+  <Project Path="ZeBusRoute/ZeBusRoute.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>
