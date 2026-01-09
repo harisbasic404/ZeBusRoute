@@ -2,11 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZeBusRoute.Pages.RoutesPage"
-             Title="RoutesPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="RUTE"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="🚌 Rute Zenica">
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}">
+        <CollectionView x:Name="RoutesListView"
+                        ItemsSource="{Binding Linije}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnRouteSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15" Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Column="0">
+                            <Label Text="{Binding Naziv}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding Smjer}"
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+                        </StackLayout>
+                        <Frame Grid.Column="1"
+                               BackgroundColor="LightBlue"
+                               Padding="10"
+                               CornerRadius="20"
+                               HorizontalOptions="End">
+                            <Label Text="{Binding Id, StringFormat='{0} linija'}"
+                                   FontSize="12"
+                                   FontAttributes="Bold"/>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+
 </ContentPage>
