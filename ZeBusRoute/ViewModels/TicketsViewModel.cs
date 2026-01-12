@@ -12,8 +12,8 @@ public class TicketsViewModel : INotifyPropertyChanged
     
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ObservableCollection<TicketType> AvailableTickets { get; set; }
-    public ObservableCollection<UserTicket> MyTickets { get; set; }
+    public ObservableCollection<TicketType> DostupneKarte { get; set; }
+    public ObservableCollection<UserTicket> MojeKarte { get; set; }
 
     public int SelectedTabIndex
     {
@@ -32,29 +32,29 @@ public class TicketsViewModel : INotifyPropertyChanged
 
     public TicketsViewModel()
     {
-        AvailableTickets = new ObservableCollection<TicketType>
+        DostupneKarte = new ObservableCollection<TicketType>
         {
             new TicketType 
             { 
-                Name = "Single Ride", 
-                Description = "Valid for 90 minutes", 
-                Price = 2.00m 
+                Ime = "Jednokratna karta", 
+                Opis = "Vazi 30 minuta", 
+                Cijena = 2.00m 
             },
             new TicketType 
             { 
-                Name = "Day Pass", 
-                Description = "Unlimited rides for 24 hours", 
-                Price = 8.00m 
+                Ime = "Dnevna karta", 
+                Opis = "Beskonacan broj voznji na 12 sati", 
+                Cijena = 8.00m 
             },
             new TicketType 
             { 
-                Name = "Monthly Pass", 
-                Description = "Unlimited rides for 30 days", 
-                Price = 50.00m 
+                Ime = "Mjesecna karta", 
+                Opis = "Beskonacan broj voznji na 30 dana", 
+                Cijena = 50.00m 
             }
         };
 
-        MyTickets = new ObservableCollection<UserTicket>
+        MojeKarte = new ObservableCollection<UserTicket>
         {
             new UserTicket 
             { 
@@ -79,13 +79,13 @@ public class TicketsViewModel : INotifyPropertyChanged
     {
         if (ticket == null) return;
         
-        // TODO: Implement actual purchase logic
+        // treba implementirati logiku kupovine
         if (Application.Current?.Windows.Count > 0)
         {
             var mainPage = Application.Current.Windows[0].Page;
             await mainPage.DisplayAlertAsync(
-                "Purchase", 
-                $"Purchasing {ticket.Name} for {ticket.PriceDisplay}", 
+                "Kupi", 
+                $"Kupite kartu {ticket.Ime} za {ticket.CijenaDisplay}", 
                 "OK");
         }
     }
