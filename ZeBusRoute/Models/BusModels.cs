@@ -25,10 +25,10 @@ public class Polazak
 
 public class TicketType
 {
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public decimal Price { get; set; }
-    public string PriceDisplay => $"{Price:F2} KM";
+    public string Ime { get; set; } = "";
+    public string Opis { get; set; } = "";
+    public decimal Cijena { get; set; }
+    public string CijenaDisplay => $"{Cijena:F2} KM";
 }
 
 public class UserTicket
