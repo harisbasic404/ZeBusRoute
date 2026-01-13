@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZeBusRoute.Pages.LineDetailsPage"
+             xmlns:models="clr-namespace:ZeBusRoute.Models"
+             Title="Detalji linije">
+
+    <ScrollView BackgroundColor="#F5F5F5">
+        <VerticalStackLayout Spacing="0">
+            
+            <!-- Header -->
+            <Grid BackgroundColor="#8BC34A" Padding="20,15">
+                <VerticalStackLayout>
+                    <Label Text="{Binding OdabranaLinija.Id, StringFormat='Linija {0}'}" 
+                           FontSize="28" 
+                           FontAttributes="Bold" 
+                           TextColor="White"/>
+                    <Label Text="{Binding OdabranaLinija.Naziv}" 
+                           FontSize="18" 
+                           TextColor="#E8F5E8"
+                           Margin="0,5,0,0"/>
+                    <Label Text="{Binding OdabranaLinija.Smjer}" 
+                           FontSize="16" 
+                           TextColor="#C8E6C9"
+                           Margin="0,2,0,0"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Stanice Section -->
+            <VerticalStackLayout Padding="20,20,20,10" BackgroundColor="White">
+                <Label Text="Stanice na ruti" 
+                       FontSize="20" 
+                       FontAttributes="Bold" 
+                       TextColor="#424242" 
+                       Margin="0,0,0,15"/>
+                
+                <CollectionView ItemsSource="{Binding Stanice}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Stanica">
+                            <Grid Padding="0,10" ColumnDefinitions="Auto,*,Auto">
+                                <!-- Station icon -->
+                                <Frame Grid.Column="0"
+                                       BackgroundColor="#E8F5E8"
+                                       CornerRadius="15"
+                                       WidthRequest="30"
+                                       HeightRequest="30"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       VerticalOptions="Center">
+                                    <Label Text="🚏" 
+                                           FontSize="14"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <!-- Station name -->
+                                <Label Grid.Column="1"
+                                       Text="{Binding Naziv}" 
+                                       FontSize="16" 
+                                       TextColor="#424242"
+                                       VerticalOptions="Center"
+                                       Margin="15,0,0,0"/>
+
+                                <!-- Distance -->
+                                <Label Grid.Column="2"
+                                       Text="{Binding Km, StringFormat='{0:F1} km'}" 
+                                       FontSize="14" 
+                                       TextColor="#9E9E9E"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Divider -->
+            <BoxView BackgroundColor="#E0E0E0" HeightRequest="1" Margin="20,0"/>
+
+            <!-- Polasci Section -->
+            <VerticalStackLayout Padding="20" BackgroundColor="White">
+                <Label Text="Vremena polaska" 
+                       FontSize="20" 
+                       FontAttributes="Bold" 
+                       TextColor="#424242" 
+                       Margin="0,0,0,15"/>
+                
+                <CollectionView ItemsSource="{Binding Polasci}"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" 
+                                         Span="3" 
+                                         HorizontalItemSpacing="10" 
+                                         VerticalItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Polazak">
+                            <Frame BackgroundColor="#E8F5E8"
+                                   Padding="15,10"
+                                   CornerRadius="10"
+                                   HasShadow="False"
+                                   VerticalOptions="Center">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding Vrijeme, StringFormat='{0:HH:mm}'}" 
+                                           FontSize="18" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2E7D32"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding RezimDisplay}" 
+                                           FontSize="12" 
+                                           TextColor="#4CAF50"
+                                           HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

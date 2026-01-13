@@ -22,6 +22,15 @@ public class Polazak
     public TimeOnly Vrijeme { get; set; }
     public string Rezim { get; set; } = ""; // "SD", "CG", "ŠN"
     public string Status { get; set; } = "On time"; // Za prikaz statusa
+    
+    // Intuitivni prikaz režima za korisnika
+    public string RezimDisplay => Rezim switch
+    {
+        "SD" => "Svakodnevno",
+        "CG" => "Cjelogodišnji",
+        "ŠN" => "Tokom školske godine",
+        _ => Rezim // Fallback za nepoznate vrijednosti
+    };
 }
 
 public class TicketType
