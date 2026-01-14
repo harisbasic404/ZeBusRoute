@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZeBusRoute.Pages.LoginPage"
+             Title="Prijava"
+             BackgroundColor="#F7F7F7">
+
+    <ContentPage.Resources>
+        <Color x:Key="Zelena">#66BB6A</Color>
+        <Color x:Key="SivaTekst">#777777</Color>
+        <Style TargetType="Frame" x:Key="Kartica">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="HasShadow" Value="False"/>
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="BorderColor" Value="#DDDDDD"/>
+            <Setter Property="Margin" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+
+        <!-- More visible input style -->
+        <Style TargetType="Entry" x:Key="PoljeUnosa">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="TextColor" Value="#222"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderColor" Value="#CCCCCC"/>
+            <Setter Property="BorderWidth" Value="1"/>
+        </Style>
+        <Style TargetType="Entry" x:Key="PoljeUnosaFokusirano" BasedOn="{StaticResource PoljeUnosa}">
+            <Setter Property="BorderColor" Value="{StaticResource Zelena}"/>
+        </Style>
+
+        <!-- More visible primary button -->
+        <Style TargetType="Button" x:Key="PrimarnoDugme">
+            <Setter Property="BackgroundColor" Value="{StaticResource Zelena}"/>
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
+        </Style>
+        <Style TargetType="Button" x:Key="SekundarnoDugme">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="TextColor" Value="{StaticResource SivaTekst}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
+            <Setter Property="BorderColor" Value="#CCCCCC"/>
+            <Setter Property="BorderWidth" Value="1"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Frame Style="{StaticResource Kartica}">
+            <VerticalStackLayout Spacing="16">
+
+                <Label Text="Sign In to ZeBusRoute"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="#222"/>
+
+                <!-- Toggle Email/Phone -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto" Padding="0,8">
+                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                            <Image Source="email_icon.png" WidthRequest="20" HeightRequest="20"/>
+                            <Label Text="Email" TextColor="#333" FontSize="16"/>
+                        </HorizontalStackLayout>
+                        <BoxView x:Name="linijaEmail" HeightRequest="3" BackgroundColor="{StaticResource Zelena}"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnOdabirEmail" NumberOfTapsRequired="1"/>
+                        </VerticalStackLayout.GestureRecognizers>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                            <Image Source="phone_icon.png" WidthRequest="20" HeightRequest="20"/>
+                            <Label Text="Phone" TextColor="#333" FontSize="16"/>
+                        </HorizontalStackLayout>
+                        <BoxView x:Name="linijaTelefon" HeightRequest="3" BackgroundColor="#DDDDDD"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnOdabirTelefon" NumberOfTapsRequired="1"/>
+                        </VerticalStackLayout.GestureRecognizers>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Email form -->
+                <VerticalStackLayout x:Name="formaEmail" Spacing="12">
+                    <Entry x:Name="unosEmail" Placeholder="Email" Keyboard="Email"
+                           Style="{StaticResource PoljeUnosa}">
+                        <Entry.Behaviors>
+                            <EventToCommandBehavior EventName="Focused"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Entry x:Name="unosLozinka" Placeholder="Password" IsPassword="True"
+                           Style="{StaticResource PoljeUnosa}"/>
+                </VerticalStackLayout>
+
+                <!-- Phone form -->
+                <VerticalStackLayout x:Name="formaTelefon" Spacing="12" IsVisible="False">
+                    <Entry x:Name="unosTelefon" Placeholder="Phone Number" Keyboard="Telephone"
+                           Style="{StaticResource PoljeUnosa}"/>
+                    <Entry x:Name="unosKod" Placeholder="Verification Code" Keyboard="Numeric"
+                           Style="{StaticResource PoljeUnosa}"/>
+                </VerticalStackLayout>
+
+                <!-- Buttons: full-width primary -->
+                <VerticalStackLayout Spacing="10" Padding="0,8,0,0">
+                    <Button Text="SIGN IN" Style="{StaticResource PrimarnoDugme}" Clicked="OnPrijava"/>
+                    <Button Text="CANCEL" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </Frame>
+    </ScrollView>
+</ContentPage>

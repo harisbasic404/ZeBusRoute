@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZeBusRoute.Pages.EditProfilePage"
+             Title="Uredi profil">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <!-- Avatar -->
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto" HorizontalOptions="Center" Padding="0,8">
+                <Frame WidthRequest="120" HeightRequest="120" CornerRadius="60" Padding="0" HasShadow="False" BorderColor="#DDDDDD">
+                    <Image x:Name="slikaProfil" Aspect="AspectFill" />
+                </Frame>
+                <Button Grid.Row="1" Text="Promijeni sliku" Clicked="OnPromijeniSliku"
+                        BackgroundColor="#EEEEEE" TextColor="#333" Padding="12,8"/>
+            </Grid>
+
+            <Entry x:Name="unosIme" Placeholder="Ime"/>
+            <Entry x:Name="unosPrezime" Placeholder="Prezime"/>
+            <Entry x:Name="unosEmail" Placeholder="Email" Keyboard="Email"/>
+            <Entry x:Name="unosTel" Placeholder="Broj telefona" Keyboard="Telephone"/>
+
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Spasi" Clicked="OnSpasi"/>
+                <Button Text="Otkaži" Clicked="OnOtkazi"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

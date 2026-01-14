@@ -57,6 +57,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Converters\**" />
+	  <Compile Remove="Converters\**" />
+	  <EmbeddedResource Remove="Converters\**" />
+	  <MauiCss Remove="Converters\**" />
+	  <MauiXaml Remove="Converters\**" />
+	  <None Remove="Converters\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Converters\InverseBoolConverter.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
@@ -64,13 +77,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Pages\EditProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\LineDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\RegisterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\RoutesPage.xaml">
@@ -79,10 +101,6 @@
 	  <MauiXaml Update="Pages\TicketsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Converters\" />
 	</ItemGroup>
 
 </Project>
