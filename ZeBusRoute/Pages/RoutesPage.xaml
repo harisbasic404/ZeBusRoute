@@ -116,41 +116,53 @@
                                        BackgroundColor="White" 
                                        CornerRadius="15" 
                                        HasShadow="True">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=OdaberiLinijuCommand}"
-                                                              CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
-                                    <Grid Padding="20" ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                                    <Grid Padding="20" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
                                         <!-- Line Number Badge -->
                                         <Frame Grid.Column="0"
-                                           BackgroundColor="#8BC34A"
-                                           WidthRequest="60"
-                                           HeightRequest="60"
-                                           CornerRadius="30"
-                                           Padding="0"
-                                           HasShadow="False"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center">
-                                           <Label Text="{Binding Id}" 
-                                               FontSize="28" 
-                                               FontAttributes="Bold" 
-                                               TextColor="White" 
-                                               HorizontalOptions="Center" 
-                                               VerticalOptions="Center"/>  
+                                               BackgroundColor="#8BC34A"
+                                               WidthRequest="60"
+                                               HeightRequest="60"
+                                               CornerRadius="30"
+                                               Padding="0"
+                                               HasShadow="False"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center">
+                                            <Label Text="{Binding Id}" 
+                                                   FontSize="28" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="White" 
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>  
                                         </Frame>
 
-                                        <!-- Line Info -->
+                                        <!-- Line Info (sa TapGestureRecognizer) -->
                                         <VerticalStackLayout Grid.Column="1" 
                                                              VerticalOptions="Center" 
                                                              Spacing="5">
+                                            <VerticalStackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=OdaberiLinijuCommand}"
+                                                                      CommandParameter="{Binding .}"/>
+                                            </VerticalStackLayout.GestureRecognizers>
+                                            
                                             <Label Text="{Binding Naziv}" 
                                                    FontSize="20" 
                                                    FontAttributes="Bold" 
                                                    TextColor="#424242"/>
                                             <Label Text="{Binding Smjer}" 
-                                                   FontSize="15" 
+                                                   FontSize="14" 
                                                    TextColor="#9E9E9E"/>
                                         </VerticalStackLayout>
+
+                                        <!-- Dugme za omiljene -->
+                                        <ImageButton Grid.Column="2"
+                                                     Source="{Binding IkonicaOmiljenog}"
+                                                     BackgroundColor="Transparent"
+                                                     WidthRequest="40"
+                                                     HeightRequest="40"
+                                                     Aspect="AspectFit"
+                                                     VerticalOptions="Center"
+                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=PrebacioOmiljenoCommand}"
+                                                     CommandParameter="{Binding .}"/>
                                     </Grid>
                                 </Frame>
                             </DataTemplate>
@@ -160,70 +172,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Raspored za odabranu liniju -->
-        <ScrollView IsVisible="{Binding JeRasporedVidljiv}" 
-                    BackgroundColor="#F5F5F5">
-            <VerticalStackLayout Spacing="0">
-                <!-- Schedule Header -->
-                <Grid BackgroundColor="#8BC34A" Padding="20,15">
-                    <HorizontalStackLayout Spacing="15">
-                        <Button Text="&#xf060;" 
-                                FontFamily="FontAwesome" 
-                                FontSize="20" 
-                                TextColor="White" 
-                                BackgroundColor="Transparent"
-                                Command="{Binding VratiSeNaLinijeCommand}"/>
-                        <Label Text="{Binding OdabranaLinija.Naziv, StringFormat='Raspored linije {0}'}" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <Frame BackgroundColor="#A5D6A7" 
-                           Padding="12,6" 
-                           CornerRadius="15" 
-                           HasShadow="False"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center">
-                        <Label Text="{Binding OdabraniTipDana}" 
-                               FontSize="14" 
-                               FontAttributes="Bold" 
-                               TextColor="White"/>
-                    </Frame>
-                </Grid>
-
-                <!-- Schedule List -->
-                <CollectionView ItemsSource="{Binding Polasci}"
-                                Margin="20,20,20,20">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:PolasakSaStanicom">
-                            <Grid Padding="0,15" ColumnDefinitions="Auto,*,Auto">
-                                <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                    <Label Text="{Binding Vrijeme, StringFormat='{0:HH:mm}'}" 
-                                           FontSize="24" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#424242"/>
-                                    <Label Text="{Binding Stanica}" 
-                                           FontSize="14" 
-                                           TextColor="#9E9E9E"/>
-                                </VerticalStackLayout>
-
-                                <Frame Grid.Column="2"
-                                       BackgroundColor="{Binding StatusColor}"
-                                       Padding="15,8"
-                                       CornerRadius="15"
-                                       HasShadow="False"
-                                       VerticalOptions="Center">
-                                    <Label Text="{Binding Status}" 
-                                           FontSize="13" 
-                                           FontAttributes="Bold" 
-                                           TextColor="White"/>
-                                </Frame>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
-        </ScrollView>
+        <!-- Raspored View (ako postoji) -->
+        <!-- ... ostali kod ... -->
     </Grid>
 </ContentPage>

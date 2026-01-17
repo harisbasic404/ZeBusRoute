@@ -24,6 +24,17 @@
                            TextColor="#C8E6C9"
                            Margin="0,2,0,0"/>
                 </VerticalStackLayout>
+                
+                <!-- Dugme za omiljene -->
+                <ImageButton x:Name="DugmeOmiljeno"
+                             Source="{Binding IkonicaOmiljenog}"
+                             BackgroundColor="Transparent"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             Aspect="AspectFit"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             Clicked="OnKlikOmiljeno"/>
             </Grid>
 
             <!-- Stanice Section -->

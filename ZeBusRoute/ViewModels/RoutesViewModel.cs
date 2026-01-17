@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ZeBusRoute.Models;
 using ZeBusRoute.Services;
+using Microsoft.Maui.Storage;
 
 namespace ZeBusRoute.ViewModels;
 
@@ -13,6 +14,7 @@ public class RoutesViewModel : INotifyPropertyChanged
     private string _odabranoVrijemeUDanu = "Jutro";
     private Linija? _odabranaLinija;
     private bool _jeRasporedVidljiv;
+    private string _trenutniEmail;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -117,14 +119,17 @@ public class RoutesViewModel : INotifyPropertyChanged
     public ICommand OdaberiVrijemeUDanu { get; }
     public ICommand OdaberiLinijuCommand { get; }
     public ICommand VratiSeNaLinijeCommand { get; }
+    public ICommand PrebacioOmiljenoCommand { get; }
 
     public RoutesViewModel()
     {
         OdaberiTipDanaCommand = new Command<string>(PriOdabiruTipaDana);
         OdaberiVrijemeUDanu = new Command<string>(PriOdabiruVremenaUDanu);
-        OdaberiLinijuCommand = new Command<Linija>(PriOdabiruLinije);
+        OdaberiLinijuCommand = new Command<Linija>(async (linija) => await PriOdabiruLinije(linija));
         VratiSeNaLinijeCommand = new Command(PriPovratkuNaLinije);
+        PrebacioOmiljenoCommand = new Command<Linija>(async (linija) => await PrebaciFavorit(linija));
 
+        _trenutniEmail = Preferences.Get("profil_email", string.Empty);
         UcitajLinije();
     }
 
@@ -135,12 +140,69 @@ public class RoutesViewModel : INotifyPropertyChanged
             DataService.InitDb();
             var linije = DataService.GetLinije();
 
+            SveLinije.Clear();
             SveLinije = new ObservableCollection<Linija>(linije);
+            
+            // Ažuriraj status omiljenih
+            AzurirajStatusOmiljenih();
+            
             FilterLinije();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju linija: {ex.Message}");
+        }
+    }
+
+    private void AzurirajStatusOmiljenih()
+    {
+        if (string.IsNullOrEmpty(_trenutniEmail))
+            return;
+
+        foreach (var linija in SveLinije)
+        {
+            linija.JeOmiljeno = DataService.JeLinijaOmiljena(_trenutniEmail, linija.Id);
+        }
+    }
+
+    private async Task PrebaciFavorit(Linija linija)
+    {
+        if (string.IsNullOrEmpty(_trenutniEmail))
+        {
+            var mainPage = Application.Current?.Windows[0]?.Page;
+            if (mainPage != null)
+            {
+                await mainPage.DisplayAlertAsync(
+                    "Prijava potrebna", 
+                    "Morate biti prijavljeni da biste dodali linije u omiljene.", 
+                    "U redu");
+            }
+            return;
+        }
+
+        try
+        {
+            if (linija.JeOmiljeno)
+            {
+                DataService.UkloniOmiljeno(_trenutniEmail, linija.Id);
+                linija.JeOmiljeno = false;
+            }
+            else
+            {
+                DataService.DodajOmiljeno(_trenutniEmail, linija.Id);
+                linija.JeOmiljeno = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            var mainPage = Application.Current?.Windows[0]?.Page;
+            if (mainPage != null)
+            {
+                await mainPage.DisplayAlertAsync(
+                    "Greška", 
+                    $"Nije moguće ažurirati omiljene: {ex.Message}", 
+                    "U redu");
+            }
         }
     }
 
@@ -208,9 +270,14 @@ public class RoutesViewModel : INotifyPropertyChanged
         OdabranoVrijemeUDanu = vrijemeUDanu;
     }
 
-    private void PriOdabiruLinije(Linija linija)
+    private async Task PriOdabiruLinije(Linija linija)
     {
-        OdabranaLinija = linija;
+        // Navigacija na LineDetailsPage
+        var mainPage = Application.Current?.Windows[0]?.Page;
+        if (mainPage is Page page && page.Navigation != null)
+        {
+            await page.Navigation.PushAsync(new Pages.LineDetailsPage(linija));
+        }
     }
 
     private void PriPovratkuNaLinije()
