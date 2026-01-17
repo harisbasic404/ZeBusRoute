@@ -45,13 +45,16 @@ public static class DataService
         {
             SeedData(conn);
         }
+        
+        // Inicijalizuj tabelu omiljenih
+        InicijalizujTabeluOmiljenih();
     }
 
     private static void SeedData(SqliteConnection conn)
     {
         // 1. Zenica "AS" - Gornja Zenica (gradska)
         InsertLinija(conn, 1, "Zenica \"AS\" - Gornja Zenica", "AS -> Gornja");
-        var stanice1 = new[] { ("Zenica AS", 0.0), ("Stadion", 1.2), ("Općina", 1.8), ("Carina", 2.5), ("Lovacki dom", 3.0), ("Mokušnice", 3.5), ("Prodavnica", 4.0), ("Turbe", 4.5), ("Luke", 5.0), ("Voljevac", 5.5), ("Gornja Zenica", 7.1) };
+        var stanice1 = new[] { ("Zenica AS", 0.0), ("Stadion", 1.2), ("Općina", 1.8), ("Carina", 2.5), ("Lovacki dom", 3.0), ("Mogućnice", 3.5), ("Prodavnica", 4.0), ("Turbe", 4.5), ("Luke", 5.0), ("Voljevac", 5.5), ("Gornja Zenica", 7.1) };
         foreach (var (naziv, km) in stanice1) InsertStanica(conn, naziv, 1, km);
         var polasci1 = new[] { "06:30", "07:15", "08:00", "09:00", "10:30", "12:00", "14:00", "16:00", "17:30", "19:00" };
         foreach (var vrijeme in polasci1) InsertPolazak(conn, 1, vrijeme);
@@ -208,5 +211,93 @@ public static class DataService
             polasci.Add(new Polazak { Vrijeme = TimeOnly.Parse(reader.GetString(0)), Rezim = reader.IsDBNull(1) ? "SD" : reader.GetString(1) });
         }
         return polasci;
+    }
+
+    public static void InicijalizujTabeluOmiljenih()
+    {
+        using var conn = new SqliteConnection($"Data Source={DbPath}");
+        conn.Open();
+        
+        var createCmd = conn.CreateCommand();
+        createCmd.CommandText = """
+            CREATE TABLE IF NOT EXISTS Omiljeni (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Email TEXT NOT NULL,
+                LinijaId INTEGER NOT NULL,
+                DatumDodavanja TEXT NOT NULL,
+                UNIQUE(Email, LinijaId),
+                FOREIGN KEY(LinijaId) REFERENCES Linije(Id)
+            );
+            """;
+        createCmd.ExecuteNonQuery();
+    }
+
+    public static bool JeLinijaOmiljena(string email, int linijaId)
+    {
+        using var conn = new SqliteConnection($"Data Source={DbPath}");
+        conn.Open();
+        
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT COUNT(*) FROM Omiljeni WHERE Email = @email AND LinijaId = @linijaId";
+        cmd.Parameters.AddWithValue("@email", email);
+        cmd.Parameters.AddWithValue("@linijaId", linijaId);
+        
+        var result = cmd.ExecuteScalar();
+        var brojac = result is not null ? (long)result : 0;
+        return brojac > 0;
+    }
+
+    public static void DodajOmiljeno(string email, int linijaId)
+    {
+        using var conn = new SqliteConnection($"Data Source={DbPath}");
+        conn.Open();
+        
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "INSERT OR IGNORE INTO Omiljeni (Email, LinijaId, DatumDodavanja) VALUES (@email, @linijaId, @datum)";
+        cmd.Parameters.AddWithValue("@email", email);
+        cmd.Parameters.AddWithValue("@linijaId", linijaId);
+        cmd.Parameters.AddWithValue("@datum", DateTime.Now.ToString("o"));
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void UkloniOmiljeno(string email, int linijaId)
+    {
+        using var conn = new SqliteConnection($"Data Source={DbPath}");
+        conn.Open();
+        
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "DELETE FROM Omiljeni WHERE Email = @email AND LinijaId = @linijaId";
+        cmd.Parameters.AddWithValue("@email", email);
+        cmd.Parameters.AddWithValue("@linijaId", linijaId);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static List<Linija> DohvatiOmiljeneLinije(string email)
+    {
+        using var conn = new SqliteConnection($"Data Source={DbPath}");
+        conn.Open();
+        
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            SELECT L.Id, L.Naziv, L.Smjer 
+            FROM Linije L
+            INNER JOIN Omiljeni O ON L.Id = O.LinijaId
+            WHERE O.Email = @email
+            ORDER BY O.DatumDodavanja DESC
+            """;
+        cmd.Parameters.AddWithValue("@email", email);
+        
+        using var reader = cmd.ExecuteReader();
+        var linije = new List<Linija>();
+        while (reader.Read())
+        {
+            linije.Add(new Linija 
+            { 
+                Id = reader.GetInt32(0), 
+                Naziv = reader.GetString(1), 
+                Smjer = reader.IsDBNull(2) ? "" : reader.GetString(2) 
+            });
+        }
+        return linije;
     }
 }

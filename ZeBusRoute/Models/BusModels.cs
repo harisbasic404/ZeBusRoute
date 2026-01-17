@@ -1,10 +1,56 @@
-﻿namespace ZeBusRoute.Models;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-public class Linija
+namespace ZeBusRoute.Models;
+
+public class Linija : INotifyPropertyChanged
 {
+    private bool _jeOmiljeno;
+    private string _ikonicaOmiljenog = "srce_prazno.png";
+
     public int Id { get; set; }
     public string Naziv { get; set; } = "";
     public string Smjer { get; set; } = ""; // "AS -> Kraj" ili "Povratak"
+
+    public bool JeOmiljeno
+    {
+        get => _jeOmiljeno;
+        set
+        {
+            _jeOmiljeno = value;
+            OnPropertyChanged();
+            AzurirajIkonu();
+        }
+    }
+
+    public string IkonicaOmiljenog
+    {
+        get => _ikonicaOmiljenog;
+        set
+        {
+            _ikonicaOmiljenog = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void AzurirajIkonu()
+    {
+        if (_jeOmiljeno)
+        {
+            IkonicaOmiljenog = "srce_puno.png"; // Puno žuto srce
+        }
+        else
+        {
+            IkonicaOmiljenog = "srce_prazno.png"; // Prazno srce
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
 
 public class Stanica
@@ -22,7 +68,7 @@ public class Polazak
     public TimeOnly Vrijeme { get; set; }
     public string Rezim { get; set; } = ""; // "SD", "CG", "ŠN"
     public string Status { get; set; } = "On time"; // Za prikaz statusa
-    
+
     // Intuitivni prikaz režima za korisnika
     public string RezimDisplay => Rezim switch
     {
