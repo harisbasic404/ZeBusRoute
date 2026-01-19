@@ -2,27 +2,147 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZeBusRoute.Pages.EditProfilePage"
-             Title="Uredi profil">
+             Title="Uredi profil"
+             BackgroundColor="#F7F7F7">
+
+    <ContentPage.Resources>
+        <Color x:Key="Zelena">#7CB342</Color>
+        <Color x:Key="SivaTekst">#777777</Color>
+
+        <Style TargetType="Frame" x:Key="Kartica">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="HasShadow" Value="False"/>
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="BorderColor" Value="#DDDDDD"/>
+            <Setter Property="Margin" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+
+        <!-- JASNO VIDLJIVA POLJA UNOSA -->
+        <Style TargetType="Entry" x:Key="PoljeUnosa">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="TextColor" Value="#222222"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderColor" Value="#B0B0B0"/>
+            <Setter Property="BorderWidth" Value="1"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="PrimarnoDugme">
+            <Setter Property="BackgroundColor" Value="{StaticResource Zelena}"/>
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="44"/>
+        </Style>
+        <Style TargetType="Button" x:Key="SekundarnoDugme">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="TextColor" Value="{StaticResource SivaTekst}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="44"/>
+            <Setter Property="BorderColor" Value="#CCCCCC"/>
+            <Setter Property="BorderWidth" Value="1"/>
+        </Style>
+    </ContentPage.Resources>
+
     <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="12">
-            <!-- Avatar -->
-            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto" HorizontalOptions="Center" Padding="0,8">
-                <Frame WidthRequest="120" HeightRequest="120" CornerRadius="60" Padding="0" HasShadow="False" BorderColor="#DDDDDD">
-                    <Image x:Name="slikaProfil" Aspect="AspectFill" />
-                </Frame>
-                <Button Grid.Row="1" Text="Promijeni sliku" Clicked="OnPromijeniSliku"
-                        BackgroundColor="#EEEEEE" TextColor="#333" Padding="12,8"/>
-            </Grid>
+        <Frame Style="{StaticResource Kartica}">
+            <VerticalStackLayout Spacing="16">
 
-            <Entry x:Name="unosIme" Placeholder="Ime"/>
-            <Entry x:Name="unosPrezime" Placeholder="Prezime"/>
-            <Entry x:Name="unosEmail" Placeholder="Email" Keyboard="Email"/>
-            <Entry x:Name="unosTel" Placeholder="Broj telefona" Keyboard="Telephone"/>
+                <Label Text="Uredi profil"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="#222"
+                       HorizontalOptions="Center"/>
 
-            <HorizontalStackLayout Spacing="10">
-                <Button Text="Spasi" Clicked="OnSpasi"/>
-                <Button Text="Otkaži" Clicked="OnOtkazi"/>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
+                <!-- Avatar -->
+                <Grid RowDefinitions="Auto,Auto"
+                      ColumnDefinitions="Auto"
+                      HorizontalOptions="Center"
+                      Padding="0,8">
+                    <Frame WidthRequest="120" HeightRequest="120"
+                           CornerRadius="60"
+                           Padding="0"
+                           HasShadow="False"
+                           BorderColor="#DDDDDD">
+                        <Image x:Name="slikaProfil" Aspect="AspectFill" />
+                    </Frame>
+                    <Button Grid.Row="1"
+                            Text="Promijeni sliku"
+                            Clicked="OnPromijeniSliku"
+                            BackgroundColor="#EEEEEE"
+                            TextColor="#333"
+                            Padding="12,8"/>
+                </Grid>
+
+                <!-- Polja profila -->
+                <VerticalStackLayout Spacing="12">
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosIme"
+                               Placeholder="Ime"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosPrezime"
+                               Placeholder="Prezime"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosEmail"
+                               Placeholder="Email"
+                               Keyboard="Email"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosTel"
+                               Placeholder="Broj telefona"
+                               Keyboard="Telephone"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <!-- Dugmad -->
+                <Grid ColumnDefinitions="*,Auto" Padding="0,8,0,0">
+                    <Button Text="OTKAŽI" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
+                    <Button Grid.Column="1" Text="SPASI" Style="{StaticResource PrimarnoDugme}" Clicked="OnSpasi"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Frame>
     </ScrollView>
 </ContentPage>

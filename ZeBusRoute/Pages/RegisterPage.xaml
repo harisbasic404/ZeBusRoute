@@ -4,8 +4,11 @@
              x:Class="ZeBusRoute.Pages.RegisterPage"
              Title="Registracija"
              BackgroundColor="#F7F7F7">
+
     <ContentPage.Resources>
-        <Color x:Key="Zelena">#66BB6A</Color>
+        <Color x:Key="Zelena">#7CB342</Color>
+        <Color x:Key="SivaTekst">#777777</Color>
+
         <Style TargetType="Frame" x:Key="Kartica">
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="HasShadow" Value="False"/>
@@ -14,69 +17,117 @@
             <Setter Property="Margin" Value="16"/>
             <Setter Property="Padding" Value="16"/>
         </Style>
-        <Style TargetType="Entry" x:Key="PoljeUnosa">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="TextColor" Value="#222"/>
-        </Style>
+
         <Style TargetType="Button" x:Key="PrimarnoDugme">
             <Setter Property="BackgroundColor" Value="{StaticResource Zelena}"/>
             <Setter Property="TextColor" Value="White"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
         </Style>
+
         <Style TargetType="Button" x:Key="SekundarnoDugme">
             <Setter Property="BackgroundColor" Value="Transparent"/>
-            <Setter Property="TextColor" Value="#777"/>
+            <Setter Property="TextColor" Value="{StaticResource SivaTekst}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="48"/>
+            <Setter Property="BorderColor" Value="#CCCCCC"/>
+            <Setter Property="BorderWidth" Value="1"/>
         </Style>
     </ContentPage.Resources>
 
     <ScrollView>
         <Frame Style="{StaticResource Kartica}">
             <VerticalStackLayout Spacing="16">
-                <Label Text="Sign Up to ZeBusRoute" FontAttributes="Bold" FontSize="18" TextColor="#222"/>
 
-                <!-- Tabs -->
-                <Grid ColumnDefinitions="*,*" Padding="0,8">
-                    <VerticalStackLayout Grid.Column="0" Spacing="6">
-                        <HorizontalStackLayout Spacing="6">
-                            <Image Source="email_icon.png" WidthRequest="18" HeightRequest="18"/>
-                            <Label Text="Email" TextColor="#333"/>
-                        </HorizontalStackLayout>
-                        <BoxView x:Name="linijaEmail" HeightRequest="2" BackgroundColor="{StaticResource Zelena}"/>
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1" Spacing="6">
-                        <HorizontalStackLayout Spacing="6">
-                            <Image Source="phone_icon.png" WidthRequest="18" HeightRequest="18"/>
-                            <Label Text="Phone" TextColor="#333"/>
-                        </HorizontalStackLayout>
-                        <BoxView x:Name="linijaTelefon" HeightRequest="2" BackgroundColor="#DDDDDD"/>
-                    </VerticalStackLayout>
-                    <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnOdabirEmail"/>
-                    </Grid.GestureRecognizers>
-                </Grid>
+                <Label Text="Registracija u ZeBusRoute"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="#222"/>
 
-                <!-- Email registration -->
-                <VerticalStackLayout x:Name="formaEmail" Spacing="12">
-                    <Entry x:Name="unosIme" Placeholder="Ime" Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosPrezime" Placeholder="Prezime" Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosEmail" Placeholder="Email" Keyboard="Email" Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosLozinka" Placeholder="Lozinka" IsPassword="True" Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosPotvrda" Placeholder="Potvrdi lozinku" IsPassword="True" Style="{StaticResource PoljeUnosa}"/>
+                <!-- Polja unosa -->
+                <VerticalStackLayout Spacing="12">
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosIme"
+                               Placeholder="Ime"
+                               PlaceholderColor="#888888"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosPrezime"
+                               Placeholder="Prezime"
+                               PlaceholderColor="#888888"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosEmail"
+                               Placeholder="Email"
+                               PlaceholderColor="#888888"
+                               Keyboard="Email"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosLozinka"
+                               Placeholder="Lozinka"
+                               PlaceholderColor="#888888"
+                               IsPassword="True"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosPotvrda"
+                               Placeholder="Potvrdi lozinku"
+                               PlaceholderColor="#888888"
+                               IsPassword="True"
+                               TextColor="#222222"
+                               FontSize="16"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
                 </VerticalStackLayout>
 
-                <!-- Phone registration -->
-                <VerticalStackLayout x:Name="formaTelefon" Spacing="12" IsVisible="False">
-                    <Entry x:Name="unosTelefon" Placeholder="Phone Number" Keyboard="Telephone" Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosKod" Placeholder="Verification Code" Keyboard="Numeric" Style="{StaticResource PoljeUnosa}"/>
-                </VerticalStackLayout>
-
-                <Grid ColumnDefinitions="*,Auto">
-                    <Button Text="CANCEL" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
-                    <Button Grid.Column="1" Text="SIGN UP" Style="{StaticResource PrimarnoDugme}" Clicked="OnRegistracija"/>
+                <!-- Dugmad -->
+                <Grid ColumnDefinitions="*,Auto" Padding="0,8,0,0">
+                    <Button Text="OTKAŽI" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
+                    <Button Grid.Column="1" Text="REGISTRUJ SE" Style="{StaticResource PrimarnoDugme}" Clicked="OnRegistracija"/>
                 </Grid>
+
             </VerticalStackLayout>
         </Frame>
     </ScrollView>

@@ -10,22 +10,22 @@
     <TabBar>
         <ShellContent
             Title="Početna"
-            Icon="dotnet_bot.png"
+            Icon="home.png"
             ContentTemplate="{DataTemplate views:HomePage}" />
 
         <ShellContent
             Title="Linije"
-            Icon="dotnet_bot.png"
+            Icon="route.png"
             ContentTemplate="{DataTemplate views:RoutesPage}" />
 
         <ShellContent
             Title="Karte"
-            Icon="dotnet_bot.png"
+            Icon="ticket.png"
             ContentTemplate="{DataTemplate views:TicketsPage}" />
 
         <ShellContent
             Title="Profil"
-            Icon="dotnet_bot.png"
+            Icon="user.png"
             ContentTemplate="{DataTemplate views:ProfilePage}" />
     </TabBar>
 

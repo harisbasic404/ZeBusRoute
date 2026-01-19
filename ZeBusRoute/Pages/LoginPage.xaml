@@ -6,8 +6,9 @@
              BackgroundColor="#F7F7F7">
 
     <ContentPage.Resources>
-        <Color x:Key="Zelena">#66BB6A</Color>
+        <Color x:Key="Zelena">#7CB342</Color>
         <Color x:Key="SivaTekst">#777777</Color>
+
         <Style TargetType="Frame" x:Key="Kartica">
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="HasShadow" Value="False"/>
@@ -17,22 +18,6 @@
             <Setter Property="Padding" Value="16"/>
         </Style>
 
-        <!-- More visible input style -->
-        <Style TargetType="Entry" x:Key="PoljeUnosa">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="TextColor" Value="#222"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="HeightRequest" Value="48"/>
-            <Setter Property="Margin" Value="0,4"/>
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="BorderColor" Value="#CCCCCC"/>
-            <Setter Property="BorderWidth" Value="1"/>
-        </Style>
-        <Style TargetType="Entry" x:Key="PoljeUnosaFokusirano" BasedOn="{StaticResource PoljeUnosa}">
-            <Setter Property="BorderColor" Value="{StaticResource Zelena}"/>
-        </Style>
-
-        <!-- More visible primary button -->
         <Style TargetType="Button" x:Key="PrimarnoDugme">
             <Setter Property="BackgroundColor" Value="{StaticResource Zelena}"/>
             <Setter Property="TextColor" Value="White"/>
@@ -42,6 +27,7 @@
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="HeightRequest" Value="48"/>
         </Style>
+
         <Style TargetType="Button" x:Key="SekundarnoDugme">
             <Setter Property="BackgroundColor" Value="Transparent"/>
             <Setter Property="TextColor" Value="{StaticResource SivaTekst}"/>
@@ -58,60 +44,47 @@
         <Frame Style="{StaticResource Kartica}">
             <VerticalStackLayout Spacing="16">
 
-                <Label Text="Sign In to ZeBusRoute"
+                <Label Text="Prijava u ZeBusRoute"
                        FontAttributes="Bold"
                        FontSize="20"
                        TextColor="#222"/>
 
-                <!-- Toggle Email/Phone -->
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto" Padding="0,8">
-                    <VerticalStackLayout Grid.Column="0" Spacing="6">
-                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                            <Image Source="email_icon.png" WidthRequest="20" HeightRequest="20"/>
-                            <Label Text="Email" TextColor="#333" FontSize="16"/>
-                        </HorizontalStackLayout>
-                        <BoxView x:Name="linijaEmail" HeightRequest="3" BackgroundColor="{StaticResource Zelena}"/>
-                        <VerticalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnOdabirEmail" NumberOfTapsRequired="1"/>
-                        </VerticalStackLayout.GestureRecognizers>
-                    </VerticalStackLayout>
+                <!-- Polja unosa: samo Email + Lozinka -->
+                <VerticalStackLayout Spacing="12">
 
-                    <VerticalStackLayout Grid.Column="1" Spacing="6">
-                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                            <Image Source="phone_icon.png" WidthRequest="20" HeightRequest="20"/>
-                            <Label Text="Phone" TextColor="#333" FontSize="16"/>
-                        </HorizontalStackLayout>
-                        <BoxView x:Name="linijaTelefon" HeightRequest="3" BackgroundColor="#DDDDDD"/>
-                        <VerticalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnOdabirTelefon" NumberOfTapsRequired="1"/>
-                        </VerticalStackLayout.GestureRecognizers>
-                    </VerticalStackLayout>
-                </Grid>
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#EEEEEE"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosEmail"
+                               Placeholder="Email"
+                               PlaceholderColor="#888888"
+                               Keyboard="Email"
+                               TextColor="#000000"
+                               FontSize="18"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
 
-                <!-- Email form -->
-                <VerticalStackLayout x:Name="formaEmail" Spacing="12">
-                    <Entry x:Name="unosEmail" Placeholder="Email" Keyboard="Email"
-                           Style="{StaticResource PoljeUnosa}">
-                        <Entry.Behaviors>
-                            <EventToCommandBehavior EventName="Focused"/>
-                        </Entry.Behaviors>
-                    </Entry>
-                    <Entry x:Name="unosLozinka" Placeholder="Password" IsPassword="True"
-                           Style="{StaticResource PoljeUnosa}"/>
+                    <Border Stroke="#B0B0B0"
+                            StrokeThickness="1"
+                            BackgroundColor="#EEEEEE"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="unosLozinka"
+                               Placeholder="Lozinka"
+                               PlaceholderColor="#888888"
+                               IsPassword="True"
+                               TextColor="#000000"
+                               FontSize="18"
+                               Margin="4"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
                 </VerticalStackLayout>
 
-                <!-- Phone form -->
-                <VerticalStackLayout x:Name="formaTelefon" Spacing="12" IsVisible="False">
-                    <Entry x:Name="unosTelefon" Placeholder="Phone Number" Keyboard="Telephone"
-                           Style="{StaticResource PoljeUnosa}"/>
-                    <Entry x:Name="unosKod" Placeholder="Verification Code" Keyboard="Numeric"
-                           Style="{StaticResource PoljeUnosa}"/>
-                </VerticalStackLayout>
-
-                <!-- Buttons: full-width primary -->
                 <VerticalStackLayout Spacing="10" Padding="0,8,0,0">
-                    <Button Text="SIGN IN" Style="{StaticResource PrimarnoDugme}" Clicked="OnPrijava"/>
-                    <Button Text="CANCEL" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
+                    <Button Text="PRIJAVA" Style="{StaticResource PrimarnoDugme}" Clicked="OnPrijava"/>
+                    <Button Text="OTKAŽI" Style="{StaticResource SekundarnoDugme}" Clicked="OnOtkazi"/>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

@@ -2,6 +2,7 @@ using System;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using ZeBusRoute.Services;
 
 namespace ZeBusRoute.ViewModels
 {
@@ -11,7 +12,7 @@ namespace ZeBusRoute.ViewModels
         public string Prezime { get; set; } = "";
         public string Email { get; set; } = "";
         public string BrojTelefona { get; set; } = "";
-        public string? SlikaPutanja { get; set; } // new
+        public string? SlikaPutanja { get; set; }
         public string ImePrezime => string.IsNullOrWhiteSpace(Prezime) ? Ime : $"{Ime} {Prezime}";
     }
 
@@ -52,18 +53,15 @@ namespace ZeBusRoute.ViewModels
 
         public ProfileViewModel()
         {
-            var email = Preferences.Get("profil_email", "");
-            var ime = Preferences.Get("profil_ime", "");
-            var prezime = Preferences.Get("profil_prezime", "");
-            var tel = Preferences.Get("profil_tel", "");
-            var slika = Preferences.Get("profil_slika", null as string);
-
-            JePrijavljen = !string.IsNullOrWhiteSpace(email);
-            Korisnik = new KorisnikModel { Ime = ime, Prezime = prezime, Email = email, BrojTelefona = tel, SlikaPutanja = slika };
+            // Učitavanje stanja prijave i profila preko servisa
+            JePrijavljen = UserAuthService.JePrijavljen();
+            var profil = UserAuthService.UcitajProfil();
+            if (profil != null)
+                Korisnik = profil;
 
             OtvoriPrijavuKomanda = new Command(async () =>
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new Pages.LoginPage());
+                await Application.Current.MainPage.Navigation.PushAsync(new Pages.LoginPage(this));
             });
 
             OtvoriRegistracijuKomanda = new Command(async () =>
@@ -78,26 +76,20 @@ namespace ZeBusRoute.ViewModels
 
             OdjavaKomanda = new Command(async () =>
             {
+                UserAuthService.Odjava();
                 JePrijavljen = false;
                 Korisnik = new KorisnikModel();
-                Preferences.Remove("profil_email");
-                Preferences.Remove("profil_ime");
-                Preferences.Remove("profil_prezime");
-                Preferences.Remove("profil_tel");
-                Preferences.Remove("profil_slika");
                 await Application.Current.MainPage.DisplayAlert("Odjava", "Odjavljeni ste.", "OK");
             });
         }
 
-        public void PostaviKorisnika(KorisnikModel k)
+        // Poziva se nakon registracije, prijave ili uređivanja profila
+        public void PostaviKorisnika(KorisnikModel k, string? novaLozinka = null)
         {
             Korisnik = k;
             JePrijavljen = !string.IsNullOrWhiteSpace(k.Email);
-            Preferences.Set("profil_email", k.Email ?? "");
-            Preferences.Set("profil_ime", k.Ime ?? "");
-            Preferences.Set("profil_prezime", k.Prezime ?? "");
-            Preferences.Set("profil_tel", k.BrojTelefona ?? "");
-            Preferences.Set("profil_slika", k.SlikaPutanja ?? "");
+            UserAuthService.SpasiProfil(k, novaLozinka);
+            Preferences.Set("auth_logged_in", JePrijavljen);
         }
     }
 }
