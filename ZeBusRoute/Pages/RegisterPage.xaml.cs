@@ -32,9 +32,9 @@ namespace ZeBusRoute.Pages
                 return;
             }
 
-            var email = unosEmail.Text?.Trim() ?? "";
-            var lozinka = unosLozinka.Text ?? "";
-            var potvrda = unosPotvrda.Text ?? "";
+            var email = (unosEmail.Text ?? "").Trim();
+            var lozinka = (unosLozinka.Text ?? "").Trim();
+            var potvrda = (unosPotvrda.Text ?? "").Trim();
 
             if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
             {

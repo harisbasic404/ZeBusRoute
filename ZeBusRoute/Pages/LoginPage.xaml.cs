@@ -17,8 +17,8 @@ namespace ZeBusRoute.Pages
 
         private async void OnPrijava(object sender, EventArgs e)
         {
-            var email = unosEmail.Text?.Trim() ?? "";
-            var lozinka = unosLozinka.Text ?? "";
+            var email = (unosEmail.Text ?? "").Trim();
+            var lozinka = (unosLozinka.Text ?? "").Trim();
 
             if (string.IsNullOrWhiteSpace(email))
             {

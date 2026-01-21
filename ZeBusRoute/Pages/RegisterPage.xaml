@@ -9,11 +9,10 @@
         <Color x:Key="Zelena">#7CB342</Color>
         <Color x:Key="SivaTekst">#777777</Color>
 
-        <Style TargetType="Frame" x:Key="Kartica">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="HasShadow" Value="False"/>
+        <Style TargetType="Border" x:Key="Kartica">
+            <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+            <Setter Property="Stroke" Value="#DDDDDD"/>
             <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="BorderColor" Value="#DDDDDD"/>
             <Setter Property="Margin" Value="16"/>
             <Setter Property="Padding" Value="16"/>
         </Style>
@@ -41,7 +40,7 @@
     </ContentPage.Resources>
 
     <ScrollView>
-        <Frame Style="{StaticResource Kartica}">
+        <Border Style="{StaticResource Kartica}">
             <VerticalStackLayout Spacing="16">
 
                 <Label Text="Registracija u ZeBusRoute"
@@ -129,6 +128,6 @@
                 </Grid>
 
             </VerticalStackLayout>
-        </Frame>
+        </Border>
     </ScrollView>
 </ContentPage>

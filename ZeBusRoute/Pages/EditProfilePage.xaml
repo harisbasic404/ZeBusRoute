@@ -9,25 +9,20 @@
         <Color x:Key="Zelena">#7CB342</Color>
         <Color x:Key="SivaTekst">#777777</Color>
 
-        <Style TargetType="Frame" x:Key="Kartica">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="HasShadow" Value="False"/>
+        <Style TargetType="Border" x:Key="Kartica">
+            <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+            <Setter Property="Stroke" Value="#DDDDDD"/>
             <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="BorderColor" Value="#DDDDDD"/>
             <Setter Property="Margin" Value="16"/>
             <Setter Property="Padding" Value="16"/>
         </Style>
 
-        <!-- JASNO VIDLJIVA POLJA UNOSA -->
         <Style TargetType="Entry" x:Key="PoljeUnosa">
             <Setter Property="BackgroundColor" Value="White"/>
             <Setter Property="TextColor" Value="#222222"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="HeightRequest" Value="48"/>
             <Setter Property="Margin" Value="0,4"/>
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="BorderColor" Value="#B0B0B0"/>
-            <Setter Property="BorderWidth" Value="1"/>
         </Style>
 
         <Style TargetType="Button" x:Key="PrimarnoDugme">
@@ -52,7 +47,7 @@
     </ContentPage.Resources>
 
     <ScrollView>
-        <Frame Style="{StaticResource Kartica}">
+        <Border Style="{StaticResource Kartica}">
             <VerticalStackLayout Spacing="16">
 
                 <Label Text="Uredi profil"
@@ -66,13 +61,13 @@
                       ColumnDefinitions="Auto"
                       HorizontalOptions="Center"
                       Padding="0,8">
-                    <Frame WidthRequest="120" HeightRequest="120"
-                           CornerRadius="60"
-                           Padding="0"
-                           HasShadow="False"
-                           BorderColor="#DDDDDD">
+                    <Border WidthRequest="120" HeightRequest="120"
+                            StrokeShape="RoundRectangle 60"
+                            Stroke="#DDDDDD"
+                            Padding="0"
+                            BackgroundColor="Transparent">
                         <Image x:Name="slikaProfil" Aspect="AspectFill" />
-                    </Frame>
+                    </Border>
                     <Button Grid.Row="1"
                             Text="Promijeni sliku"
                             Clicked="OnPromijeniSliku"
@@ -87,8 +82,10 @@
                     <Border Stroke="#B0B0B0"
                             StrokeThickness="1"
                             BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 6">
+                            StrokeShape="RoundRectangle 6"
+                            Padding="12,8">
                         <Entry x:Name="unosIme"
+                               Style="{StaticResource PoljeUnosa}"
                                Placeholder="Ime"
                                TextColor="#222222"
                                FontSize="16"
@@ -99,8 +96,10 @@
                     <Border Stroke="#B0B0B0"
                             StrokeThickness="1"
                             BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 6">
+                            StrokeShape="RoundRectangle 6"
+                            Padding="12,8">
                         <Entry x:Name="unosPrezime"
+                               Style="{StaticResource PoljeUnosa}"
                                Placeholder="Prezime"
                                TextColor="#222222"
                                FontSize="16"
@@ -111,8 +110,10 @@
                     <Border Stroke="#B0B0B0"
                             StrokeThickness="1"
                             BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 6">
+                            StrokeShape="RoundRectangle 6"
+                            Padding="12,8">
                         <Entry x:Name="unosEmail"
+                               Style="{StaticResource PoljeUnosa}"
                                Placeholder="Email"
                                Keyboard="Email"
                                TextColor="#222222"
@@ -124,8 +125,10 @@
                     <Border Stroke="#B0B0B0"
                             StrokeThickness="1"
                             BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 6">
+                            StrokeShape="RoundRectangle 6"
+                            Padding="12,8">
                         <Entry x:Name="unosTel"
+                               Style="{StaticResource PoljeUnosa}"
                                Placeholder="Broj telefona"
                                Keyboard="Telephone"
                                TextColor="#222222"
@@ -143,6 +146,6 @@
                 </Grid>
 
             </VerticalStackLayout>
-        </Frame>
+        </Border>
     </ScrollView>
 </ContentPage>
