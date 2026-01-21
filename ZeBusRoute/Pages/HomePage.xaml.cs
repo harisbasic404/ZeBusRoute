@@ -1,131 +1,166 @@
-﻿using System.Collections.ObjectModel;
-using ZeBusRoute.Models;
-using ZeBusRoute.Services;
+﻿using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;                    // MapSpan, Distance
+using Microsoft.Maui.Devices.Sensors;        // Geolocation, GeolocationRequest
+using Position = Microsoft.Maui.Devices.Sensors.Location;
 
 namespace ZeBusRoute.Pages;
 
 public partial class HomePage : ContentPage
 {
-    private List<Linija> _sveLinije;
-    private ObservableCollection<RezultatPretrage> _filtriraniRezultati;
-
-    public ObservableCollection<RezultatPretrage> FiltriraniRezultati
-    {
-        get => _filtriraniRezultati;
-        set
-        {
-            _filtriraniRezultati = value;
-            OnPropertyChanged();
-        }
-    }
+    private readonly List<Station> _stations;
+    private readonly MapSpan _zenicaRegion = MapSpan.FromCenterAndRadius(new Position(44.1994, 17.9066), Distance.FromKilometers(25));
+    private Pin? _userPin;
+    private bool _initialized;
 
     public HomePage()
     {
         InitializeComponent();
-        _filtriraniRezultati = new ObservableCollection<RezultatPretrage>();
-        _sveLinije = new List<Linija>();
-        BindingContext = this;
+
+        _stations = new List<Station>
+        {
+            new Station("Zenica AS",        "Linije: 1,2,3 | 06:00-22:00", new Position(44.1994, 17.9066)),
+            new Station("Gornja Zenica",    "Linije: 1,5",                 new Position(44.2100, 17.9100)),
+            new Station("Bilješnica",       "Linije: 2,4",                 new Position(44.2050, 17.9000)),
+            new Station("Kakanj Centar",    "Linija: 3",                   new Position(44.1200, 18.1200)),
+            new Station("Vareš Centar",     "Linija: 6",                   new Position(44.1800, 18.3400)),
+        };
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        UcitajLinije();
+
+        if (_initialized)
+            return;
+
+        CenterMap();
+        LoadPins(_stations);
+        _initialized = true;
     }
 
-    private void UcitajLinije()
+    private void LoadPins(IEnumerable<Station> source)
     {
-        try
+        BusMap.Pins.Clear();
+
+        foreach (var station in source)
         {
-            // Inicijaliziraj bazu ako još nije
-            DataService.InitDb();
-            _sveLinije = DataService.GetLinije();
+            var pin = new Pin
+            {
+                Label = station.Name,
+                Address = station.Address,
+                Location = station.Location,
+                Type = PinType.Place
+            };
+
+            pin.MarkerClicked += OnPinMarkerClicked;
+            BusMap.Pins.Add(pin);
         }
-        catch (Exception ex)
+
+        if (_userPin != null)
         {
-            DisplayAlert("Greška", $"Nije moguće učitati linije: {ex.Message}", "OK");
+            BusMap.Pins.Add(_userPin);
         }
     }
 
-    private void PriPromjeniTekstaPretrage(object sender, TextChangedEventArgs e)
-    {
-        var tekstPretrage = e.NewTextValue?.ToLower() ?? string.Empty;
+    private void CenterMap() =>
+        BusMap.MoveToRegion(_zenicaRegion);
 
-        if (string.IsNullOrWhiteSpace(tekstPretrage))
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        var query = (e.NewTextValue ?? string.Empty).Trim();
+
+        if (string.IsNullOrWhiteSpace(query))
         {
-            FiltriraniRezultati.Clear();
+            LoadPins(_stations);
             return;
         }
 
-        var rezultati = new List<RezultatPretrage>();
+        var filtered = _stations
+            .Where(s => s.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
+                     || s.Address.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
-        foreach (var linija in _sveLinije)
+        LoadPins(filtered);
+    }
+
+    private void OnCenterZenicaClicked(object sender, EventArgs e) =>
+        CenterMap();
+
+    private async void OnMyLocationClicked(object sender, EventArgs e)
+    {
+        if (!await EnsureLocationPermissionAsync())
         {
-            // Pretraži po liniji
-            if (linija.Id.ToString().Contains(tekstPretrage) ||
-                linija.Naziv.ToLower().Contains(tekstPretrage) ||
-                linija.Smjer.ToLower().Contains(tekstPretrage))
-            {
-                // Dodaj polaske za ovu liniju
-                var polasci = DataService.GetPolasci(linija.Id);
-                var dostupniRezimi = polasci.Select(d => d.RezimDisplay).Distinct().ToList();
-
-                rezultati.Add(new RezultatPretrage
-                {
-                    Linija = linija,
-                    DostupniRezimi = string.Join(", ", dostupniRezimi),
-                    BrojPolazaka = polasci.Count
-                });
-            }
-            else
-            {
-                // Pretraži po stanicama
-                var stanice = DataService.GetStanice(linija.Id);
-                if (stanice.Any(s => s.Naziv.ToLower().Contains(tekstPretrage)))
-                {
-                    var polasci = DataService.GetPolasci(linija.Id);
-                    var dostupniRezimi = polasci.Select(d => d.RezimDisplay).Distinct().ToList();
-
-                    rezultati.Add(new RezultatPretrage
-                    {
-                        Linija = linija,
-                        DostupniRezimi = string.Join(", ", dostupniRezimi),
-                        BrojPolazaka = polasci.Count,
-                        PronadenaStanica = stanice.First(s => s.Naziv.ToLower().Contains(tekstPretrage)).Naziv
-                    });
-                }
-            }
+            await DisplayAlertAsync("Lokacija nedostupna", "Nije odobrena dozvola za pristup lokaciji.", "OK");
+            return;
         }
 
-        FiltriraniRezultati.Clear();
-        foreach (var rezultat in rezultati.Take(10)) // Ograniči na 10 rezultata
+        try
         {
-            FiltriraniRezultati.Add(rezultat);
+            var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+            var location = await Geolocation.Default.GetLocationAsync(request);
+
+            if (location == null)
+            {
+                await DisplayAlertAsync("Lokacija nedostupna", "Trenutnu lokaciju nije moguće dobiti.", "OK");
+                return;
+            }
+
+            _userPin = new Pin
+            {
+                Label = "Moja lokacija",
+                Address = "Trenutna pozicija",
+                Location = new Position(location.Latitude, location.Longitude),
+                Type = PinType.SavedPin
+            };
+            _userPin.MarkerClicked += OnPinMarkerClicked;
+
+            LoadPins(_stations);
+            BusMap.MoveToRegion(MapSpan.FromCenterAndRadius(_userPin.Location, Distance.FromKilometers(2)));
+        }
+        catch (FeatureNotSupportedException)
+        {
+            await DisplayAlertAsync("Lokacija nedostupna", "GPS nije podržan na ovom uređaju.", "OK");
+        }
+        catch (Exception)
+        {
+            await DisplayAlertAsync("Lokacija nedostupna", "Trenutnu lokaciju nije moguće dohvatiti.", "OK");
         }
     }
 
-    private async void PriOdabiruLinije(object sender, SelectionChangedEventArgs e)
+    private async void OnPinMarkerClicked(object? sender, PinClickedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is RezultatPretrage odabraniRezultat)
+        e.HideInfoWindow = true;
+
+        if (sender is Pin pin)
         {
-            // Reset selekcije
-            KolekcijaLinija.SelectedItem = null;
-            
-            // Navigiraj na detalje linije
-            await Navigation.PushAsync(new LineDetailsPage(odabraniRezultat.Linija));
+            await DisplayActionSheetAsync($"{pin.Label}\n{pin.Address}\n\nOdaberi:", "OK", null, "Raspored");
         }
+    }
+
+    private async void OnFavoriteClicked(object sender, EventArgs e) =>
+        await DisplayAlertAsync("Favoriti", "Dodavanje u favorite još nije implementirano.", "OK");
+
+    private static async Task<bool> EnsureLocationPermissionAsync()
+    {
+        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+        if (status == PermissionStatus.Granted)
+            return true;
+
+        status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+        return status == PermissionStatus.Granted;
     }
 }
 
-// Helper klasa za rezultate pretrage
-public class RezultatPretrage
+public class Station
 {
-    public Linija Linija { get; set; } = new();
-    public string DostupniRezimi { get; set; } = "";
-    public int BrojPolazaka { get; set; }
-    public string? PronadenaStanica { get; set; }
-    
-    public string InfoZaPrikaz => PronadenaStanica != null 
-        ? $"Prolazi kroz: {PronadenaStanica}" 
-        : $"{BrojPolazaka} polazaka";
+    public Station(string name, string address, Position location)
+    {
+        Name = name;
+        Address = address;
+        Location = location;
+    }
+
+    public string Name { get; }
+    public string Address { get; }
+    public Position Location { get; }
 }

@@ -3,10 +3,8 @@ using ZeBusRoute.ViewModels;
 
 namespace ZeBusRoute.Services
 {
-    // Jednostavan servis za rad sa korisnikom (lokalno čuvanje u Preferences)
     public static class UserAuthService
     {
-        // Ključevi u Preferences
         private const string KEY_EMAIL = "auth_email";
         private const string KEY_PASSWORD = "auth_password";
         private const string KEY_LOGGED_IN = "auth_logged_in";
@@ -16,44 +14,52 @@ namespace ZeBusRoute.Services
         private const string KEY_PROFIL_TEL = "profil_tel";
         private const string KEY_PROFIL_SLIKA = "profil_slika";
 
+        private static string NormalizeEmail(string email) => (email ?? string.Empty).Trim().ToLowerInvariant();
+        private static string NormalizePassword(string password) => (password ?? string.Empty).Trim();
+
         public static bool DaLiJeRegistrovan(string email)
         {
+            var emailNorm = NormalizeEmail(email);
             var sacuvaniEmail = Preferences.Get(KEY_EMAIL, "");
             return !string.IsNullOrWhiteSpace(sacuvaniEmail) &&
-                   string.Equals(sacuvaniEmail, email, StringComparison.OrdinalIgnoreCase);
+                   NormalizeEmail(sacuvaniEmail) == emailNorm;
         }
 
         public static bool Registruj(string ime, string prezime, string email, string lozinka)
         {
-            // Ako već postoji isti email – ne registruj
-            if (DaLiJeRegistrovan(email))
+            var emailNorm = NormalizeEmail(email);
+            var passNorm = NormalizePassword(lozinka);
+
+            if (DaLiJeRegistrovan(emailNorm))
                 return false;
 
-            Preferences.Set(KEY_EMAIL, email);
-            Preferences.Set(KEY_PASSWORD, lozinka);
+            Preferences.Set(KEY_EMAIL, emailNorm);
+            Preferences.Set(KEY_PASSWORD, passNorm);
             Preferences.Set(KEY_LOGGED_IN, true);
 
-            // Osnovni profil podaci
             Preferences.Set(KEY_PROFIL_IME, ime);
             Preferences.Set(KEY_PROFIL_PREZIME, prezime);
-            Preferences.Set(KEY_PROFIL_TEL, "");          // prazan početno
-            Preferences.Set(KEY_PROFIL_SLIKA, "");        // nema slike na početku
+            Preferences.Set(KEY_PROFIL_TEL, "");
+            Preferences.Set(KEY_PROFIL_SLIKA, "");
 
             return true;
         }
 
         public static bool Prijava(string email, string lozinka)
         {
+            var emailNorm = NormalizeEmail(email);
+            var lozinkaNorm = NormalizePassword(lozinka);
+
             var sacuvaniEmail = Preferences.Get(KEY_EMAIL, "");
             var sacuvanaLozinka = Preferences.Get(KEY_PASSWORD, "");
 
             if (string.IsNullOrWhiteSpace(sacuvaniEmail))
                 return false;
 
-            if (!string.Equals(sacuvaniEmail, email, StringComparison.OrdinalIgnoreCase))
+            if (NormalizeEmail(sacuvaniEmail) != emailNorm)
                 return false;
 
-            if (sacuvanaLozinka != lozinka)
+            if (NormalizePassword(sacuvanaLozinka) != lozinkaNorm)
                 return false;
 
             Preferences.Set(KEY_LOGGED_IN, true);
@@ -62,7 +68,6 @@ namespace ZeBusRoute.Services
 
         public static void Odjava()
         {
-            // Ne brišemo kompletan nalog (email/lozinka), samo flag da je trenutno prijavljen
             Preferences.Set(KEY_LOGGED_IN, false);
         }
 
@@ -95,7 +100,7 @@ namespace ZeBusRoute.Services
         public static void SpasiProfil(KorisnikModel korisnik, string? novaLozinka = null)
         {
             if (!string.IsNullOrWhiteSpace(korisnik.Email))
-                Preferences.Set(KEY_EMAIL, korisnik.Email);
+                Preferences.Set(KEY_EMAIL, NormalizeEmail(korisnik.Email));
 
             Preferences.Set(KEY_PROFIL_IME, korisnik.Ime ?? "");
             Preferences.Set(KEY_PROFIL_PREZIME, korisnik.Prezime ?? "");
@@ -103,7 +108,7 @@ namespace ZeBusRoute.Services
             Preferences.Set(KEY_PROFIL_SLIKA, korisnik.SlikaPutanja ?? "");
 
             if (!string.IsNullOrWhiteSpace(novaLozinka))
-                Preferences.Set(KEY_PASSWORD, novaLozinka);
+                Preferences.Set(KEY_PASSWORD, NormalizePassword(novaLozinka));
         }
     }
 }
