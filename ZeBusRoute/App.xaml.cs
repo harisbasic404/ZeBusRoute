@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ZeBusRoute.Pages;
 
 namespace ZeBusRoute
 {
@@ -11,7 +12,7 @@ namespace ZeBusRoute
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            return new Window(new SplashPage());
         }
     }
 }
