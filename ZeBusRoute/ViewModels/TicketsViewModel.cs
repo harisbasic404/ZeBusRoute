@@ -57,15 +57,12 @@ public class TicketsViewModel : INotifyPropertyChanged
         }
     }
 
-    // Tab Colors
     public Color BuyTicketsTabColor => SelectedTabIndex == 0 ? Color.FromArgb("#8BC34A") : Color.FromArgb("#9E9E9E");
     public Color MyTicketsTabColor => SelectedTabIndex == 1 ? Color.FromArgb("#8BC34A") : Color.FromArgb("#9E9E9E");
 
-    // Tab Visibility
     public bool IsBuyTicketsTabVisible => SelectedTabIndex == 0;
     public bool IsMyTicketsTabVisible => SelectedTabIndex == 1;
 
-    // Underline Visibility
     public bool BuyTicketsUnderlineVisible => SelectedTabIndex == 0;
     public bool MyTicketsUnderlineVisible => SelectedTabIndex == 1;
 

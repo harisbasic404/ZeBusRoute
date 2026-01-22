@@ -1,6 +1,3 @@
-// Ensure that the partial class has a corresponding XAML file named LoginPage.xaml
-// and that the XAML file's root element includes x:Class="ZeBusRoute.Pages.LoginPage"
-// If you do not have a XAML file, you need to define the InitializeComponent method manually or remove the call.
 
 public partial class LoginPage : ContentPage
 {

@@ -15,7 +15,7 @@
         <!-- Header -->
         <Grid BackgroundColor="#8BC34A" Padding="20,15">
             <HorizontalStackLayout Spacing="10">
-                <Label Text="&#xf145;" 
+                <Label  
                        FontFamily="FontAwesome" 
                        FontSize="28" 
                        TextColor="White" 

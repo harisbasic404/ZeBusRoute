@@ -6,7 +6,7 @@ namespace ZeBusRoute.Models;
 public class Linija : INotifyPropertyChanged
 {
     private bool _jeOmiljeno;
-    private string _ikonicaOmiljenog = "srce_prazno.svg"; // default empty heart
+    private string _ikonicaOmiljenog = "srce_prazno.svg";
 
     public int Id { get; set; }
     public string Naziv { get; set; } = "";
@@ -37,11 +37,11 @@ public class Linija : INotifyPropertyChanged
     {
         if (_jeOmiljeno)
         {
-            IkonicaOmiljenog = "srce_puno.svg";   // filled heart
+            IkonicaOmiljenog = "srce_puno.svg";  
         }
         else
         {
-            IkonicaOmiljenog = "srce_prazno.svg"; // empty heart
+            IkonicaOmiljenog = "srce_prazno.svg";
         }
     }
 
@@ -66,7 +66,7 @@ public class Polazak
     public int Id { get; set; }
     public int LinijaId { get; set; }
     public TimeOnly Vrijeme { get; set; }
-    public string Rezim { get; set; } = ""; // "SD", "CG", "ŠN"
+    public string Rezim { get; set; } = ""; 
     public string Status { get; set; } = "On time"; // Za prikaz statusa
 
     // Intuitivni prikaz režima za korisnika

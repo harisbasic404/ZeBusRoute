@@ -308,7 +308,7 @@ public class RoutesViewModel : INotifyPropertyChanged
         var mainPage = Application.Current?.Windows[0]?.Page;
         if (mainPage is Page page && page.Navigation != null)
         {
-            await page.Navigation.PushAsync(new Pages.LineDetailsPage(linija));
+            await page.Navigation.PushAsync(new Pages.LineDetailsPage(linija, OdabranoVrijemeUDanu));
         }
     }
 

@@ -6,15 +6,12 @@ namespace ZeBusRoute.Pages
 {
     public partial class ProfilePage : ContentPage
     {
-        // Stanje korisnika
         private bool jePrijavljen = false;
 
-        // Postavke
         private string trenutniJezik = "English";
         private bool jeTamniMod = false;
         private bool dozvoliNotifikacije = true;
 
-        // UI reference preko FindByName (negenerička + cast)
         private Label oznakaJezikRef => (Label)FindByName("oznakaJezik");
         private Switch prekidacTamniModRef => (Switch)FindByName("prekidacTamniMod");
         private Switch prekidacNotifikacijeRef => (Switch)FindByName("prekidacNotifikacije");
@@ -46,7 +43,6 @@ namespace ZeBusRoute.Pages
             var sacuvaniToken = Preferences.Get(KLJUC_TOKEN, string.Empty);
             jePrijavljen = !string.IsNullOrEmpty(sacuvaniEmail) && !string.IsNullOrEmpty(sacuvaniToken);
 
-            // Inicijalni prikaz
             if (oznakaJezikRef != null) oznakaJezikRef.Text = trenutniJezik;
             if (prekidacTamniModRef != null) prekidacTamniModRef.IsToggled = jeTamniMod;
             if (prekidacNotifikacijeRef != null) prekidacNotifikacijeRef.IsToggled = dozvoliNotifikacije;
@@ -69,19 +65,16 @@ namespace ZeBusRoute.Pages
                 dugmeRegistracijaRef.IsEnabled = !jePrijavljen;
         }
 
-        // Dugme na vrhu - SIGN IN info
         private async void OnKlikPrijava(object sender, EventArgs e)
         {
             await DisplayAlert("Prijava", "Unesite email i lozinku u polja ispod, pa kliknite Prijava.", "OK");
         }
 
-        // Dugme - KREIRAJ NALOG (popup objašnjenje)
         private async void OnKreirajNalog(object sender, EventArgs e)
         {
             await DisplayAlert("Kreiranje naloga", "Unesite email i lozinku u polja ispod, pa kliknite Registracija.", "OK");
         }
 
-        // Toggling Dark Mode
         private void OnPromjenaTamniMod(object sender, ToggledEventArgs e)
         {
             jeTamniMod = e.Value;
@@ -89,14 +82,12 @@ namespace ZeBusRoute.Pages
             Application.Current.UserAppTheme = jeTamniMod ? AppTheme.Dark : AppTheme.Light;
         }
 
-        // Toggling Notifications
         private void OnPromjenaNotifikacije(object sender, ToggledEventArgs e)
         {
             dozvoliNotifikacije = e.Value;
             Preferences.Set(KLJUC_NOTIF, dozvoliNotifikacije);
         }
 
-        // Prijava ili Odjava
         private async void OnPosaljiPrijavu(object sender, EventArgs e)
         {
             if (!jePrijavljen)
@@ -110,13 +101,10 @@ namespace ZeBusRoute.Pages
                     return;
                 }
 
-                // Jednostavna lokalna provjera
                 if (email.Contains("@") && lozinka.Length >= 4)
                 {
-                    // Simulacija tokena, u pravoj aplikaciji dobijen od API-a
                     var token = Guid.NewGuid().ToString("N");
 
-                    // Sačuvati profil lokalno
                     Preferences.Set(KLJUC_EMAIL, email);
                     Preferences.Set(KLJUC_TOKEN, token);
 
@@ -130,7 +118,6 @@ namespace ZeBusRoute.Pages
             }
             else
             {
-                // Odjava i brisanje lokalnih podataka
                 jePrijavljen = false;
                 Preferences.Remove(KLJUC_EMAIL);
                 Preferences.Remove(KLJUC_TOKEN);
@@ -141,7 +128,6 @@ namespace ZeBusRoute.Pages
             AzurirajUIZaPrijavu();
         }
 
-        // Registracija (kreiranje naloga) i spremanje profila
         private async void OnPosaljiRegistraciju(object sender, EventArgs e)
         {
             var email = unosEmailRef?.Text?.Trim() ?? string.Empty;
@@ -165,7 +151,6 @@ namespace ZeBusRoute.Pages
                 return;
             }
 
-            // Simuliraj uspješnu registraciju i odmah spremi profil
             var token = Guid.NewGuid().ToString("N");
             Preferences.Set(KLJUC_EMAIL, email);
             Preferences.Set(KLJUC_TOKEN, token);

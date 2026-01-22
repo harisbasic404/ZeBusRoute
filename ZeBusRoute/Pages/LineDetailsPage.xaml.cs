@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using ZeBusRoute.Models;
 using ZeBusRoute.Services;
 using Microsoft.Maui.Storage;
@@ -8,6 +9,7 @@ namespace ZeBusRoute.Pages;
 public partial class LineDetailsPage : ContentPage
 {
     private readonly Linija _odabranaLinija;
+    private readonly string _odabranoVrijemeUDanu;
     private ObservableCollection<Stanica> _stanice;
     private ObservableCollection<Polazak> _polasci;
     private bool _jeOmiljeno;
@@ -56,10 +58,11 @@ public partial class LineDetailsPage : ContentPage
         }
     }
 
-    public LineDetailsPage(Linija linija)
+    public LineDetailsPage(Linija linija, string odabranoVrijemeUDanu)
     {
         InitializeComponent();
         _odabranaLinija = linija;
+        _odabranoVrijemeUDanu = string.IsNullOrWhiteSpace(odabranoVrijemeUDanu) ? "Jutro" : odabranoVrijemeUDanu;
         _stanice = new ObservableCollection<Stanica>();
         _polasci = new ObservableCollection<Polazak>();
         BindingContext = this;
@@ -73,18 +76,29 @@ public partial class LineDetailsPage : ContentPage
     {
         try
         {
-            // Učitaj stanice
             var stanice = DataService.GetStanice(_odabranaLinija.Id);
             Stanice = new ObservableCollection<Stanica>(stanice);
 
-            // Učitaj polaske
             var polasci = DataService.GetPolasci(_odabranaLinija.Id);
-            Polasci = new ObservableCollection<Polazak>(polasci);
+            var filtrirani = polasci.Where(p => FiltrirajPoVremenuDana(p.Vrijeme)).ToList();
+            Polasci = new ObservableCollection<Polazak>(filtrirani);
         }
         catch (Exception ex)
         {
             await DisplayAlert("Greška", $"Nije moguće učitati detalje linije: {ex.Message}", "U redu");
         }
+    }
+
+    private bool FiltrirajPoVremenuDana(TimeOnly vrijeme)
+    {
+        int sat = vrijeme.Hour;
+        return _odabranoVrijemeUDanu switch
+        {
+            "Jutro" => sat >= 5 && sat < 12,
+            "Podne" => sat >= 12 && sat < 17,
+            "Vecer" => sat >= 17 || sat < 5,
+            _ => true
+        };
     }
 
     private void ProvjeriStatusOmiljenog()
