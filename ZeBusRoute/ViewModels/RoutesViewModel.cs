@@ -5,6 +5,7 @@ using System.Windows.Input;
 using ZeBusRoute.Models;
 using ZeBusRoute.Services;
 using Microsoft.Maui.Storage;
+using Microsoft.Maui.Controls;
 
 namespace ZeBusRoute.ViewModels;
 
@@ -14,13 +15,30 @@ public class RoutesViewModel : INotifyPropertyChanged
     private string _odabranoVrijemeUDanu = "Jutro";
     private Linija? _odabranaLinija;
     private bool _jeRasporedVidljiv;
-    private string _trenutniEmail;
+    private string _trenutniEmail = string.Empty;
+    private bool _isUserLoggedIn;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public ObservableCollection<Linija> SveLinije { get; set; } = new();
     public ObservableCollection<Linija> FiltriraneLinije { get; set; } = new();
     public ObservableCollection<PolasakSaStanicom> Polasci { get; set; } = new();
+
+    public bool IsUserLoggedIn
+    {
+        get => _isUserLoggedIn;
+        private set
+        {
+            if (_isUserLoggedIn != value)
+            {
+                _isUserLoggedIn = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PrijavaNedostaje));
+            }
+        }
+    }
+
+    public bool PrijavaNedostaje => !IsUserLoggedIn;
 
     public string OdabraniTipDana
     {
@@ -129,8 +147,22 @@ public class RoutesViewModel : INotifyPropertyChanged
         VratiSeNaLinijeCommand = new Command(PriPovratkuNaLinije);
         PrebacioOmiljenoCommand = new Command<Linija>(async (linija) => await PrebaciFavorit(linija));
 
-        _trenutniEmail = Preferences.Get("profil_email", string.Empty);
+        RefreshAuthState();
         UcitajLinije();
+    }
+
+    private void RefreshAuthState()
+    {
+        var profil = UserAuthService.UcitajProfil();
+        var email = profil?.Email;
+
+        if (string.IsNullOrWhiteSpace(email))
+            email = Preferences.Get("auth_email", string.Empty);   // glavna auth adresa
+        if (string.IsNullOrWhiteSpace(email))
+            email = Preferences.Get("profil_email", string.Empty); // fallback ako se koristi stari ključ
+
+        _trenutniEmail = email ?? string.Empty;
+        IsUserLoggedIn = UserAuthService.JePrijavljen() && !string.IsNullOrWhiteSpace(_trenutniEmail);
     }
 
     private void UcitajLinije()
@@ -142,10 +174,8 @@ public class RoutesViewModel : INotifyPropertyChanged
 
             SveLinije.Clear();
             SveLinije = new ObservableCollection<Linija>(linije);
-            
-            // Ažuriraj status omiljenih
+
             AzurirajStatusOmiljenih();
-            
             FilterLinije();
         }
         catch (Exception ex)
@@ -167,14 +197,16 @@ public class RoutesViewModel : INotifyPropertyChanged
 
     private async Task PrebaciFavorit(Linija linija)
     {
-        if (string.IsNullOrEmpty(_trenutniEmail))
+        RefreshAuthState(); // uvijek osvježi stanje prije provjere
+
+        if (!IsUserLoggedIn || string.IsNullOrEmpty(_trenutniEmail))
         {
             var mainPage = Application.Current?.Windows[0]?.Page;
             if (mainPage != null)
             {
                 await mainPage.DisplayAlertAsync(
-                    "Prijava potrebna", 
-                    "Morate biti prijavljeni da biste dodali linije u omiljene.", 
+                    "Prijava potrebna",
+                    "Prijavi se da dodaš favorite.",
                     "U redu");
             }
             return;
@@ -192,6 +224,8 @@ public class RoutesViewModel : INotifyPropertyChanged
                 DataService.DodajOmiljeno(_trenutniEmail, linija.Id);
                 linija.JeOmiljeno = true;
             }
+
+            FavoritesNotifier.NotifyFavoritesChanged();
         }
         catch (Exception ex)
         {
@@ -199,8 +233,8 @@ public class RoutesViewModel : INotifyPropertyChanged
             if (mainPage != null)
             {
                 await mainPage.DisplayAlertAsync(
-                    "Greška", 
-                    $"Nije moguće ažurirati omiljene: {ex.Message}", 
+                    "Greška",
+                    $"Nije moguće ažurirati omiljene: {ex.Message}",
                     "U redu");
             }
         }
@@ -210,8 +244,6 @@ public class RoutesViewModel : INotifyPropertyChanged
     {
         FiltriraneLinije.Clear();
         
-        // Ovdje možete dodati logiku filtriranja po danu i vremenu
-        // Za sada prikazujemo sve linije
         foreach (var linija in SveLinije)
         {
             FiltriraneLinije.Add(linija);

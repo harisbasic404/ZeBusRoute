@@ -210,7 +210,7 @@
                                               WidthRequest="200"
                                               BackgroundColor="White"
                                               HorizontalOptions="Center">
-                                            <Image Source="qr_code_placeholder.png" 
+                                            <Image Source="qrcode.png" 
                                                    Aspect="AspectFit"
                                                    HeightRequest="200"
                                                    WidthRequest="200"/>
