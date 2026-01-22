@@ -2,7 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:vm="clr-namespace:ZeBusRoute.ViewModels"
+             xmlns:models="clr-namespace:ZeBusRoute.Models"
              x:Class="ZeBusRoute.Pages.HomePage"
+             x:DataType="vm:HomeViewModel"
              Title="ZeBusRoute"
              BackgroundColor="White">
 
@@ -12,7 +15,7 @@
 
         <!-- Header -->
         <Grid Grid.Row="0"
-              BackgroundColor="#4CAF50"
+              BackgroundColor="#8BC34A"
               Padding="16,12"
               ColumnDefinitions="*,Auto"
               VerticalOptions="Center">
@@ -36,8 +39,8 @@
             <Border Stroke="#D6D6D6"
                     StrokeThickness="1"
                     BackgroundColor="White"
-                    Padding="12"
-                    HeightRequest="48">
+                    Padding="14,10"
+                    HeightRequest="54">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="24" />
                 </Border.StrokeShape>
@@ -47,40 +50,46 @@
                            HeightRequest="18"
                            VerticalOptions="Center"
                            Opacity="0.6"/>
-                    <Entry Placeholder="Search stops or lines..."
+                    <Entry Placeholder="Pretraži linije..."
                            PlaceholderColor="#9E9E9E"
                            TextColor="#333333"
                            BackgroundColor="Transparent"
                            FontSize="14"
                            ClearButtonVisibility="WhileEditing"
-                           VerticalOptions="Center"/>
+                           VerticalOptions="Center"
+                           VerticalTextAlignment="Center"
+                           TextChanged="OnSearchTextChanged"/>
                 </Grid>
             </Border>
         </Grid>
 
         <!-- Favorites chips -->
         <VerticalStackLayout Grid.Row="2" Spacing="6" Padding="16,0,16,8">
-            <Label Text="Favorites"
+            <Label Text="Omiljene linije"
                    FontSize="12"
                    TextColor="#6A6A6A"/>
-            <HorizontalStackLayout Spacing="10">
-                <Button Text="Centar"
-                        FontSize="14"
-                        Padding="12,8"
-                        BackgroundColor="#E8F5E8"
-                        TextColor="#2E7D32"
-                        CornerRadius="20"
-                        BorderColor="#8BC34A"
-                        BorderWidth="1"/>
-                <Button Text="Gradska Vijećnica"
-                        FontSize="14"
-                        Padding="12,8"
-                        BackgroundColor="#E8F5E8"
-                        TextColor="#2E7D32"
-                        CornerRadius="20"
-                        BorderColor="#8BC34A"
-                        BorderWidth="1"/>
-            </HorizontalStackLayout>
+            <Label Text="Nema omiljenih linija. Dodaj na Routes page."
+                   FontSize="12"
+                   TextColor="#9E9E9E"
+                   IsVisible="{Binding HasNoFavorites}"/>
+            <CollectionView ItemsSource="{Binding FilteredFavoriteLines}"
+                            ItemsLayout="HorizontalList"
+                            HeightRequest="52"
+                            IsVisible="{Binding HasFavorites}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Linija">
+                        <Button Text="{Binding Naziv}"
+                                FontSize="14"
+                                Padding="12,8"
+                                BackgroundColor="#E8F5E8"
+                                TextColor="#2E7D32"
+                                CornerRadius="20"
+                                BorderColor="#8BC34A"
+                                BorderWidth="1"
+                                Clicked="OnFavoriteLineClicked" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
 
         <!-- Map -->

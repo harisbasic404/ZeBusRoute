@@ -6,7 +6,7 @@ namespace ZeBusRoute.Models;
 public class Linija : INotifyPropertyChanged
 {
     private bool _jeOmiljeno;
-    private string _ikonicaOmiljenog = "srce_prazno.png";
+    private string _ikonicaOmiljenog = "srce_prazno.svg"; // default empty heart
 
     public int Id { get; set; }
     public string Naziv { get; set; } = "";
@@ -37,11 +37,11 @@ public class Linija : INotifyPropertyChanged
     {
         if (_jeOmiljeno)
         {
-            IkonicaOmiljenog = "srce_puno.png"; // Puno žuto srce
+            IkonicaOmiljenog = "srce_puno.svg";   // filled heart
         }
         else
         {
-            IkonicaOmiljenog = "srce_prazno.png"; // Prazno srce
+            IkonicaOmiljenog = "srce_prazno.svg"; // empty heart
         }
     }
 

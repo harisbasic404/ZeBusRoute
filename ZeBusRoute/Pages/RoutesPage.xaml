@@ -30,6 +30,12 @@
                     </HorizontalStackLayout>
                 </Grid>
 
+                <Label Text="Prijavi se da dodaš favorite"
+                       Padding="20,10,20,0"
+                       FontAttributes="Italic"
+                       TextColor="#9E9E9E"
+                       IsVisible="{Binding PrijavaNedostaje}" />
+
                 <!-- Filtri -->
                 <VerticalStackLayout Padding="20" Spacing="15" BackgroundColor="White">
                     <!-- Day Type Filter -->
@@ -162,7 +168,10 @@
                                                      Aspect="AspectFit"
                                                      VerticalOptions="Center"
                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=PrebacioOmiljenoCommand}"
-                                                     CommandParameter="{Binding .}"/>
+                                                     CommandParameter="{Binding .}"
+                                                     IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=IsUserLoggedIn}"
+                                                     Opacity="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=IsUserLoggedIn, Converter={StaticResource BoolToOpacityConverter}}"
+                                                     SemanticProperties.Hint="Dodaj u favorite"/>
                                     </Grid>
                                 </Frame>
                             </DataTemplate>
